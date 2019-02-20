@@ -11,11 +11,11 @@ namespace Chama.CourseManagement.Domain.Entities
         public User Teacher { get; set; }
         public List<User> Students { get; set; }
 
-        void EnrollStudent(Guid studentId)
+        public void Signup(Guid studentId)
         {
             if(studentId == Teacher.UserId)
             {
-                throw new Exception($"Teacher could not be enrolled as a student. Id{studentId}");
+                throw new Exception($"Teacher could not be enrolled as a student. Id:{studentId}");
             }
             if(Students?.Count == TotalCapacity)
             {
