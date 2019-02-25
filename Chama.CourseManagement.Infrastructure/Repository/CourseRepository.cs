@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Chama.CourseManagement.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Chama.CourseManagement.Infrastructure.Repository
 {
@@ -16,7 +17,12 @@ namespace Chama.CourseManagement.Infrastructure.Repository
 
         public async Task<Course> GetCourse(Guid courseId)
         {
-            return await CourseDbContext.Courses.FindAsync(courseId);
+            return await CourseDbContext.Courses.Include(o=>o.UserCourses).FirstOrDefaultAsync(o=>o.CourseId == courseId);
+        }
+
+        public async Task<User> GetUser(Guid userId)
+        {
+            return await CourseDbContext.Users.FindAsync(userId);
         }
     }
 }

@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Chama.CourseManagement.WebService.Controllers
 {
-    [Route("courses/v2]")]
+    [Route("api/courses/v2")]
     [ApiController]
     public class CoursesV2Controller : ControllerBase
     {
@@ -19,7 +19,7 @@ namespace Chama.CourseManagement.WebService.Controllers
         {
             MessagingClient = messagingClient;
         }
-        [HttpPut("/{courseId}/signup")]
+        [HttpPut("{courseId}/signup")]
         public async Task<IActionResult> SignupCourseV2(Guid courseId, [FromBody]SignupCourseRequest request)
         {
             try
@@ -34,7 +34,7 @@ namespace Chama.CourseManagement.WebService.Controllers
             catch (Exception ex)
             {
                 // To do - Handle exceptions, log it and throw appropriate errors
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
     }

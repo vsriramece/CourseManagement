@@ -7,5 +7,6 @@ namespace Chama.CourseManagement.Infrastructure.Repository
     public interface ICourseRepository
     {
         Task<Course> GetCourse(Guid courseId);
+        Task<User> GetUser(Guid studentId);
     }
 }

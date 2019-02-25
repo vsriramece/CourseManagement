@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Chama.CourseManagement.Infrastructure.DTO.Response.Reports
 {
-    public class CourseData: CourseReportBaseData
+    public class CourseReportData: CourseReportBaseData
     {
-        public string Teacher { get; set; }
+        public Guid TeacherId { get; set; }
 
         public IEnumerable<string> StudentList { get; set; }
     }

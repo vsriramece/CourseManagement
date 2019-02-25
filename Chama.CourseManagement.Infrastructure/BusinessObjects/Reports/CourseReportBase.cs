@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Chama.CourseManagement.Infrastructure.DTO.Response.Reports
+namespace Chama.CourseManagement.Infrastructure.BusinessObjects.Reports
 {
-    public class CourseReportBaseData
+    public class CourseReportBase
     {
         public Guid CourseId { get; set; }
         public string CourseName { get; set; }

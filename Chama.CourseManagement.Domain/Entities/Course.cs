@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Chama.CourseManagement.Domain.Entities
 {
@@ -8,19 +9,30 @@ namespace Chama.CourseManagement.Domain.Entities
         public Guid CourseId { get; set; }
         public string CourseName { get; set; }
         public int TotalCapacity { get; set; }
-        public User Teacher { get; set; }
-        public List<User> Students { get; set; }
+        public Guid TeacherUserId { get; set; }
+        // EF core doesn't support many-to many relationship elegantly until now. 
+        // Development in progress. Until then, an explicit relationship entity is required
+        public IList<UserCourse> UserCourses { get; set; } = new List<UserCourse>();
 
-        public void Signup(Guid studentId)
+        public Course()
         {
-            if(studentId == Teacher.UserId)
+            
+        }
+        public void Signup(User student)
+        {
+            if(student.UserId == TeacherUserId)
             {
-                throw new Exception($"Teacher could not be enrolled as a student. Id:{studentId}");
+                throw new Exception($"Teacher could not be enrolled as a student. User Id:{student.UserId}");
             }
-            if(Students?.Count == TotalCapacity)
+            if(UserCourses?.Count == TotalCapacity)
             {
                 throw new Exception($"The course :{CourseName} reached the maximum enrollment limit.");
             }
+            if (UserCourses?.FirstOrDefault(o=>o.UserId==student.UserId) != null)
+            {
+                throw new Exception($"Student already enrolled in the course. User Id :{student.UserId}");
+            }
+            UserCourses.Add(new UserCourse() { Course = this, CourseId= this.CourseId, User = student, UserId = student.UserId});
         }
     }
 }

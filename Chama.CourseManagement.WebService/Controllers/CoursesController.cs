@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Chama.CourseManagement.WebService.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/courses")]
     [ApiController]
     public class CoursesController : ControllerBase
     {
@@ -22,7 +22,7 @@ namespace Chama.CourseManagement.WebService.Controllers
         }
 
         // POST api/courses
-        [HttpPost("courses")]
+        [HttpPost()]
         public async Task<IActionResult> CreateCourse([FromBody]CreateCourseRequest request)
         {
             try
@@ -37,11 +37,11 @@ namespace Chama.CourseManagement.WebService.Controllers
             catch (Exception ex)
             {
                 // To do - Handle exceptions, log it and throw appropriate errors
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
-        [HttpPut("courses/{courseId}/signup")]
+        [HttpPut("{courseId}/signup")]
         public async Task<IActionResult> SignupCourse(Guid courseId,[FromBody]SignupCourseRequest request)
         {
             try
@@ -56,7 +56,7 @@ namespace Chama.CourseManagement.WebService.Controllers
             catch (Exception ex)
             {
                 // To do - Handle exceptions, log it and throw appropriate errors
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
     }
