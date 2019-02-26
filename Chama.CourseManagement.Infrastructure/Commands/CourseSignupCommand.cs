@@ -10,7 +10,7 @@ namespace Chama.CourseManagement.Infrastructure.Commands
             CourseId = courseId;
             InputData = input;
         }
-        public Guid CourseId { get; private set; }
-        public SignupCourseRequest InputData { get; private set; }
+        public Guid CourseId { get; set; }
+        public SignupCourseRequest InputData { get; set; }
     }
 }

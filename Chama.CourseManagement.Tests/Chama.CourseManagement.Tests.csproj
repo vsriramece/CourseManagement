@@ -7,9 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoFixture.AutoMoq" Version="4.8.0" />
+    <PackageReference Include="AutoFixture.Xunit2" Version="4.8.0" />
+    <PackageReference Include="FluentAssertions" Version="5.6.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
     <PackageReference Include="xunit" Version="2.4.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controller\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Chama.Common\Chama.Common.csproj" />
+    <ProjectReference Include="..\Chama.CourseManagement.Domain\Chama.CourseManagement.Domain.csproj" />
+    <ProjectReference Include="..\Chama.CourseManagement.Infrastructure\Chama.CourseManagement.Infrastructure.csproj" />
+    <ProjectReference Include="..\Chama.CourseManagement.WebService\Chama.CourseManagement.WebService.csproj" />
   </ItemGroup>
 
 </Project>

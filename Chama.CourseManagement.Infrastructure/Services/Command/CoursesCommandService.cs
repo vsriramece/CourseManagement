@@ -39,6 +39,7 @@ namespace Chama.CourseManagement.Infrastructure.Services.Command
             }
             course.Signup(user);
             await UnitOfWork.Commit();
+            result.Success = true;
             return result;
         }
 

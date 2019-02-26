@@ -1,45 +1,36 @@
-﻿using Chama.CourseManagement.Infrastructure.Commands;
-using Chama.CourseManagement.Infrastructure.Repository;
+﻿using Chama.Common.Email;
+using Chama.CourseManagement.Infrastructure.Commands;
 using Chama.CourseManagement.Infrastructure.Services;
-using Chama.CourseManagement.Infrastructure.Services.Command;
-using Chama.CourseManagement.Infrastructure.UnitOfWork;
 using Microsoft.Azure.WebJobs;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace Chama.CourseManagement.Webjob.MessageProcessor
 {
     public class CourseSignupProcessor
     {
-        //private ICoursesCommandService CommandService;
-
-        // TO do - Dependency injection
-        //public CourseSignupProcessor(ICoursesCommandService commandService)
-        //{
-        //   // CommandService = commandService;
-        //}
-
-        public static void ProcessQueueMessage([ServiceBusTrigger("coursesignup", Connection = "ServiceBus")] string message, ILogger logger)
+        private readonly ICoursesCommandService CommandService;
+        private readonly IEmailProvider EmailProvider;
+        public CourseSignupProcessor(ICoursesCommandService commandService, IEmailProvider emailProvider)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<CourseManagementDbContext>();
-            optionsBuilder.UseSqlServer(Program.Configuration.GetConnectionString("CourseManagementDBConnection"));
-            CourseManagementDbContext dbContext = new CourseManagementDbContext(optionsBuilder.Options);
-            ICourseRepository repository = new CourseRepository(dbContext);
-            IUnitOfWork uow = new UnitOfWork(dbContext);
-            ICoursesCommandService CommandService = new CoursesCommandService(repository, uow);
+            CommandService = commandService;
+            EmailProvider = emailProvider;
+        }
+
+        public async Task ProcessQueueMessage([ServiceBusTrigger("coursesignup", Connection = "ServiceBus")] string message, ILogger logger)
+        {
             try
             {
                 var command = Newtonsoft.Json.JsonConvert.DeserializeObject<CourseSignupCommand>(message);
-                CommandService.SignupCourse(command);
-                //Email success
+                await CommandService.SignupCourse(command);
+                //Email success - Mock data
+                await EmailProvider.SendEmail("user@abc.com", "Signup success!", "Success");
             }
             catch(Exception ex)
             {
-                //Email failure
+                //Log exception and Email failure
+                await EmailProvider.SendEmail("user@abc.com", "Signup failed!", "Failure");
             }
 
         }

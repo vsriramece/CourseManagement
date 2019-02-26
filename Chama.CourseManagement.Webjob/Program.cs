@@ -1,5 +1,9 @@
-﻿using Chama.CourseManagement.Infrastructure.Repository;
+﻿using Chama.Common.Email;
+using Chama.CourseManagement.Infrastructure.Repository;
+using Chama.CourseManagement.Infrastructure.Services;
+using Chama.CourseManagement.Infrastructure.Services.Command;
 using Chama.CourseManagement.Infrastructure.UnitOfWork;
+using Chama.CourseManagement.Webjob.MessageProcessor;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Azure.WebJobs.ServiceBus;
 using Microsoft.EntityFrameworkCore;
@@ -17,8 +21,8 @@ namespace Chama.CourseManagement.Webjob
         internal static IServiceCollection Services { get; set; }
         static void Main(string[] args)
         {
-            IServiceCollection services = new ServiceCollection();
-            ConfigureServices(services);
+            //IServiceCollection services = new ServiceCollection();
+            //ConfigureServices(services);
            
 
             var builder = new HostBuilder();
@@ -28,8 +32,14 @@ namespace Chama.CourseManagement.Webjob
                 b.AddServiceBus();
                 
             });
-            var host = builder.Build();
-            
+            builder.ConfigureServices((hostBuilderContext, services) =>
+            { 
+                ConfigureServices(services);
+                services.AddSingleton<IJobActivator>(new WebJobActivator(services.BuildServiceProvider()));
+            });
+            var host = builder.Build(); 
+
+
             using (host)
             {
                 host.Run();
@@ -53,23 +63,9 @@ namespace Chama.CourseManagement.Webjob
                 (options => options.UseSqlServer(connection));
             services.AddTransient<ICourseRepository, CourseRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-         
-
-        }
-    }
-
-    public class JobActivator : IJobActivator
-    {
-        private readonly IServiceProvider services;
-
-        public JobActivator(IServiceProvider services)
-        {
-            this.services = services;
-        }
-
-        public T CreateInstance<T>()
-        {
-            return services.GetService<T>();
+            services.AddScoped<ICoursesCommandService, CoursesCommandService>();
+            services.AddTransient<CourseSignupProcessor>();
+            services.AddSingleton<IEmailProvider, EmailProvider>();
         }
     }
 }
